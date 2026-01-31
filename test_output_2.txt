@@ -1,0 +1,62 @@
+
+> ai-chatbot@0.1.0 test
+> jest
+
+FAIL src/lib/subscription-tiers.test.ts
+  ● Subscription Tiers › canAccessModel › should allow premium models for pro tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 48 |[39m         it([32m"should allow premium models for pro tier"[39m[33m,[39m () [33m=>[39m {
+     [90m 49 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"gpt-4"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 50 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"claude-3-opus"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                                                            [31m[1m^[22m[39m
+     [90m 51 |[39m         })[33m;[39m
+     [90m 52 |[39m     })[33m;[39m
+     [90m 53 |[39m })[33m;[39m[0m
+
+      at Object.toBe (src/lib/subscription-tiers.test.ts:50:60)
+
+FAIL src/lib/rate-limiter.test.ts
+  ● Rate Limiter › checkMessageQuota › should block request when over limit
+
+    TypeError: Cannot redefine property: getMessageLimit
+        at Object.defineProperty (<anonymous>)
+
+    [0m [90m 25 |[39m         it([32m"should block request when over limit"[39m[33m,[39m () [33m=>[39m {
+     [90m 26 |[39m             [90m// Mock getMessageLimit to return 10[39m
+    [31m[1m>[22m[39m[90m 27 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"getMessageLimit"[39m)[33m.[39mmockReturnValue([35m10[39m)[33m;[39m
+     [90m    |[39m                  [31m[1m^[22m[39m
+     [90m 28 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"isUnlimited"[39m)[33m.[39mmockReturnValue([36mfalse[39m)[33m;[39m
+     [90m 29 |[39m
+     [90m 30 |[39m             [36mconst[39m result [33m=[39m checkMessageQuota([32m"free"[39m[33m,[39m [35m10[39m)[33m;[39m[0m
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:616:16)
+      at Object.spyOn (src/lib/rate-limiter.test.ts:27:18)
+
+  ● Rate Limiter › checkMessageQuota › should always allow unlimited tier
+
+    TypeError: Cannot redefine property: isUnlimited
+        at Object.defineProperty (<anonymous>)
+
+    [0m [90m 35 |[39m
+     [90m 36 |[39m         it([32m"should always allow unlimited tier"[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 37 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"isUnlimited"[39m)[33m.[39mmockReturnValue([36mtrue[39m)[33m;[39m
+     [90m    |[39m                  [31m[1m^[22m[39m
+     [90m 38 |[39m
+     [90m 39 |[39m             [36mconst[39m result [33m=[39m checkMessageQuota([32m"enterprise"[39m[33m,[39m [35m1000[39m)[33m;[39m
+     [90m 40 |[39m             expect(result[33m.[39mallowed)[33m.[39mtoBe([36mtrue[39m)[33m;[39m[0m
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:616:16)
+      at Object.spyOn (src/lib/rate-limiter.test.ts:37:18)
+
+PASS src/lib/validation.test.ts
+
+Test Suites: 2 failed, 1 passed, 3 total
+Tests:       3 failed, 12 passed, 15 total
+Snapshots:   0 total
+Time:        1.397 s
+Ran all test suites.

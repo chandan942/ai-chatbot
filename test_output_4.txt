@@ -1,0 +1,13 @@
+
+> ai-chatbot@0.1.0 test
+> jest
+
+PASS src/lib/subscription-tiers.test.ts
+PASS src/lib/validation.test.ts
+PASS src/lib/rate-limiter.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        1.443 s
+Ran all test suites.

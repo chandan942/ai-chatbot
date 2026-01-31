@@ -136,7 +136,7 @@ export default function ChatPage() {
                     const trimmedLine = line.trim();
                     if (!trimmedLine.startsWith("data: ")) continue;
 
-                    let parsed: any = null;
+                    let parsed: unknown = null;
                     try {
                         parsed = JSON.parse(trimmedLine.slice(6));
                     } catch (err) {
@@ -145,7 +145,12 @@ export default function ChatPage() {
                         continue;
                     }
 
-                    const data = parsed;
+                    const data = parsed as {
+                        token?: string;
+                        done?: boolean;
+                        usage?: { total_tokens?: number };
+                        error?: string;
+                    };
 
                     if (data?.token) {
                         assistantContent += data.token;
@@ -181,7 +186,12 @@ export default function ChatPage() {
                     if (!trimmedLine.startsWith("data: ")) continue;
 
                     try {
-                        const parsed = JSON.parse(trimmedLine.slice(6));
+                        const parsed = JSON.parse(trimmedLine.slice(6)) as {
+                            token?: string;
+                            done?: boolean;
+                            usage?: { total_tokens?: number };
+                            error?: string;
+                        };
                         const data = parsed;
 
                         if (data?.token) {

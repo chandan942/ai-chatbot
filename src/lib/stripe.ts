@@ -7,6 +7,8 @@ import Stripe from "stripe";
 const stripeKey = process.env.STRIPE_SECRET_KEY || "dummy-key-for-build";
 
 export const stripe = new Stripe(stripeKey, {
+    // This literal must match the API version type shipped with the installed Stripe SDK.
+    // Keeping it in sync avoids TypeScript compile-time errors.
     apiVersion: "2026-01-28.clover",
     typescript: true,
 });

@@ -1,0 +1,125 @@
+
+> ai-chatbot@0.1.0 test
+> jest
+
+FAIL src/lib/validation.test.ts
+  ● Validation › validateRequest › should throw error when validation fails
+
+    expect(received).toThrow(expected)
+
+    Expected substring: "Validation failed"
+    Received message:   "Cannot read properties of undefined (reading 'map')"
+
+        [0m [90m 119 |[39m         [90m// result.error is a ZodError[39m
+         [90m 120 |[39m         [90m// eslint-disable-next-line @typescript-eslint/no-explicit-any[39m
+        [31m[1m>[22m[39m[90m 121 |[39m         [36mconst[39m errors [33m=[39m (result[33m.[39merror [36mas[39m any)[33m.[39merrors[33m.[39mmap((e[33m:[39m { message[33m:[39m string }) [33m=>[39m e[33m.[39mmessage)[33m.[39mjoin([32m", "[39m)[33m;[39m
+         [90m     |[39m                                                     [31m[1m^[22m[39m
+         [90m 122 |[39m         [36mthrow[39m [36mnew[39m [33mError[39m([32m`Validation failed: ${errors}`[39m)[33m;[39m
+         [90m 123 |[39m     }
+         [90m 124 |[39m     [36mreturn[39m result[33m.[39mdata[33m;[39m[0m
+
+      at map (src/lib/validation.ts:121:53)
+      at src/lib/validation.test.ts:22:32
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.toThrow (src/lib/validation.test.ts:23:16)
+      at Object.toThrow (src/lib/validation.test.ts:23:16)
+
+FAIL src/lib/subscription-tiers.test.ts
+  ● Subscription Tiers › getSubscriptionLimits › should return correct limits for free tier
+
+    TypeError: (0 , _subscriptiontiers.getSubscriptionLimits) is not a function
+
+    [0m [90m  9 |[39m     describe([32m"getSubscriptionLimits"[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m         it([32m"should return correct limits for free tier"[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 11 |[39m             [36mconst[39m limits [33m=[39m getSubscriptionLimits([32m"free"[39m)[33m;[39m
+     [90m    |[39m                                                 [31m[1m^[22m[39m
+     [90m 12 |[39m             expect(limits)[33m.[39mtoEqual([33mTIERS[39m[33m.[39mfree)[33m;[39m
+     [90m 13 |[39m         })[33m;[39m
+     [90m 14 |[39m[0m
+
+      at Object.<anonymous> (src/lib/subscription-tiers.test.ts:11:49)
+
+  ● Subscription Tiers › getSubscriptionLimits › should return correct limits for pro tier
+
+    TypeError: (0 , _subscriptiontiers.getSubscriptionLimits) is not a function
+
+    [0m [90m 14 |[39m
+     [90m 15 |[39m         it([32m"should return correct limits for pro tier"[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m             [36mconst[39m limits [33m=[39m getSubscriptionLimits([32m"pro"[39m)[33m;[39m
+     [90m    |[39m                                                 [31m[1m^[22m[39m
+     [90m 17 |[39m             expect(limits)[33m.[39mtoEqual([33mTIERS[39m[33m.[39mpro)[33m;[39m
+     [90m 18 |[39m         })[33m;[39m
+     [90m 19 |[39m[0m
+
+      at Object.<anonymous> (src/lib/subscription-tiers.test.ts:16:49)
+
+  ● Subscription Tiers › getSubscriptionLimits › should return free tier limits for unknown tier
+
+    TypeError: (0 , _subscriptiontiers.getSubscriptionLimits) is not a function
+
+    [0m [90m 20 |[39m         it([32m"should return free tier limits for unknown tier"[39m[33m,[39m () [33m=>[39m {
+     [90m 21 |[39m             [90m// @ts-ignore testing invalid input[39m
+    [31m[1m>[22m[39m[90m 22 |[39m             [36mconst[39m limits [33m=[39m getSubscriptionLimits([32m"unknown"[39m)[33m;[39m
+     [90m    |[39m                                                 [31m[1m^[22m[39m
+     [90m 23 |[39m             expect(limits)[33m.[39mtoEqual([33mTIERS[39m[33m.[39mfree)[33m;[39m
+     [90m 24 |[39m         })[33m;[39m
+     [90m 25 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (src/lib/subscription-tiers.test.ts:22:49)
+
+  ● Subscription Tiers › canAccessModel › should allow premium models for pro tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 48 |[39m         it([32m"should allow premium models for pro tier"[39m[33m,[39m () [33m=>[39m {
+     [90m 49 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"gpt-4"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 50 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"claude-3-opus"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                                                            [31m[1m^[22m[39m
+     [90m 51 |[39m         })[33m;[39m
+     [90m 52 |[39m     })[33m;[39m
+     [90m 53 |[39m })[33m;[39m[0m
+
+      at Object.toBe (src/lib/subscription-tiers.test.ts:50:60)
+
+FAIL src/lib/rate-limiter.test.ts
+  ● Rate Limiter › checkMessageQuota › should block request when over limit
+
+    TypeError: Cannot redefine property: getMessageLimit
+        at Object.defineProperty (<anonymous>)
+
+    [0m [90m 25 |[39m         it([32m"should block request when over limit"[39m[33m,[39m () [33m=>[39m {
+     [90m 26 |[39m             [90m// Mock getMessageLimit to return 10[39m
+    [31m[1m>[22m[39m[90m 27 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"getMessageLimit"[39m)[33m.[39mmockReturnValue([35m10[39m)[33m;[39m
+     [90m    |[39m                  [31m[1m^[22m[39m
+     [90m 28 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"isUnlimited"[39m)[33m.[39mmockReturnValue([36mfalse[39m)[33m;[39m
+     [90m 29 |[39m
+     [90m 30 |[39m             [36mconst[39m result [33m=[39m checkMessageQuota([32m"free"[39m[33m,[39m [35m10[39m)[33m;[39m[0m
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:616:16)
+      at Object.spyOn (src/lib/rate-limiter.test.ts:27:18)
+
+  ● Rate Limiter › checkMessageQuota › should always allow unlimited tier
+
+    TypeError: Cannot redefine property: isUnlimited
+        at Object.defineProperty (<anonymous>)
+
+    [0m [90m 35 |[39m
+     [90m 36 |[39m         it([32m"should always allow unlimited tier"[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 37 |[39m             jest[33m.[39mspyOn([33mSubscriptionTiers[39m[33m,[39m [32m"isUnlimited"[39m)[33m.[39mmockReturnValue([36mtrue[39m)[33m;[39m
+     [90m    |[39m                  [31m[1m^[22m[39m
+     [90m 38 |[39m
+     [90m 39 |[39m             [36mconst[39m result [33m=[39m checkMessageQuota([32m"enterprise"[39m[33m,[39m [35m1000[39m)[33m;[39m
+     [90m 40 |[39m             expect(result[33m.[39mallowed)[33m.[39mtoBe([36mtrue[39m)[33m;[39m[0m
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:616:16)
+      at Object.spyOn (src/lib/rate-limiter.test.ts:37:18)
+
+Test Suites: 3 failed, 3 total
+Tests:       7 failed, 8 passed, 15 total
+Snapshots:   0 total
+Time:        1.317 s
+Ran all test suites.

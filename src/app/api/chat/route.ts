@@ -67,13 +67,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Parse and validate request
-        let messages: any;
+        let messages: ChatMessage[];
         let model: AIModel;
         let chatId: string | undefined;
         try {
             const body = await request.json();
             const parsed = validateRequest(chatRequestSchema, body);
-            messages = parsed.messages;
+            messages = parsed.messages as ChatMessage[];
             model = parsed.model;
             chatId = parsed.chatId;
         } catch (err: unknown) {

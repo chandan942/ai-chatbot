@@ -1,0 +1,30 @@
+
+> ai-chatbot@0.1.0 test
+> jest
+
+FAIL src/lib/subscription-tiers.test.ts
+  ● Subscription Tiers › canAccessModel › should allow premium models for pro tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 48 |[39m         it([32m"should allow premium models for pro tier"[39m[33m,[39m () [33m=>[39m {
+     [90m 49 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"gpt-4"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 50 |[39m             expect(canAccessModel([32m"pro"[39m[33m,[39m [32m"claude-3-opus"[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                                                            [31m[1m^[22m[39m
+     [90m 51 |[39m         })[33m;[39m
+     [90m 52 |[39m     })[33m;[39m
+     [90m 53 |[39m })[33m;[39m[0m
+
+      at Object.toBe (src/lib/subscription-tiers.test.ts:50:60)
+
+PASS src/lib/rate-limiter.test.ts
+PASS src/lib/validation.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 14 passed, 15 total
+Snapshots:   0 total
+Time:        1.41 s
+Ran all test suites.

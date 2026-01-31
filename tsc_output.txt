@@ -1,0 +1,7 @@
+src/app/(dashboard)/usage/page.tsx(5,40): error TS2305: Module '"@/lib/subscription-tiers"' has no exported member 'getUsagePercentage'.
+src/app/(dashboard)/usage/page.tsx(5,60): error TS2305: Module '"@/lib/subscription-tiers"' has no exported member 'isNearLimit'.
+src/app/api/stripe/webhook/route.ts(72,46): error TS2339: Property 'current_period_end' does not exist on type 'Response<Subscription>'.
+src/app/api/stripe/webhook/route.ts(96,42): error TS2339: Property 'current_period_end' does not exist on type 'Subscription'.
+src/lib/stripe.ts(12,5): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-01-28.clover"'.
+src/lib/validation.ts(119,37): error TS2339: Property 'errors' does not exist on type 'ZodError<T>'.
+src/lib/validation.ts(119,49): error TS7006: Parameter 'e' implicitly has an 'any' type.

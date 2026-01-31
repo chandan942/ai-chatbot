@@ -8,8 +8,6 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-
     let saved: string | null = null;
     if (typeof window !== "undefined") {
       try {
@@ -44,12 +42,12 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       media = window.matchMedia("(prefers-color-scheme: dark)");
       const handler = (e: MediaQueryListEvent) => apply(e.matches ? "dark" : "light");
       if (media.addEventListener) media.addEventListener("change", handler);
-      else if (media.addListener) media.addListener(handler as any);
+      else if (media.addListener) media.addListener(handler);
 
       return () => {
         if (media) {
           if (media.removeEventListener) media.removeEventListener("change", handler);
-          else if (media.removeListener) media.removeListener(handler as any);
+          else if (media.removeListener) media.removeListener(handler);
         }
       };
     }
@@ -57,11 +55,6 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     // no cleanup needed if saved
     return;
   }, []);
-
-  // Avoid rendering children until client has applied theme to prevent flash
-  if (!mounted) {
-    return null;
-  }
 
   return <>{children}</>;
 }
