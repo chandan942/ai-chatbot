@@ -1,3 +1,4 @@
+import { describe, it, expect } from '@jest/globals';
 import {
     getSubscriptionLimits,
     isUnlimited,
@@ -18,7 +19,6 @@ describe("Subscription Tiers", () => {
         });
 
         it("should return free tier limits for unknown tier", () => {
-            // @ts-ignore testing invalid input
             const limits = getSubscriptionLimits("unknown");
             expect(limits).toEqual(TIERS.free);
         });

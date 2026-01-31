@@ -1,16 +1,17 @@
+import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { checkMessageQuota } from "./rate-limiter";
 
 // Mock date to ensure consistent testing
 const MOCK_DATE = new Date("2024-01-15T12:00:00Z").getTime();
-const ORIGINAL_DATE = Date;
 
 describe("Rate Limiter", () => {
     beforeEach(() => {
-        global.Date.now = jest.fn(() => MOCK_DATE);
+        jest.useFakeTimers();
+        jest.setSystemTime(MOCK_DATE);
     });
 
     afterEach(() => {
-        global.Date = ORIGINAL_DATE;
+        jest.useRealTimers();
         jest.clearAllMocks();
     });
 
