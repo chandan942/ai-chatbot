@@ -49,9 +49,9 @@ export async function POST(request: NextRequest) {
             .eq("id", user.id)
             .single();
 
+        // If profile fetch fails (e.g., table doesn't exist), use default tier
         if (profileError) {
-            logger.error("Failed to fetch profile", profileError);
-            return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+            logger.warn("Could not fetch profile, using default tier", { error: profileError?.message });
         }
 
         const tier: SubscriptionTier = profile?.subscription_tier || "free";
