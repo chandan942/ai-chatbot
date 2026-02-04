@@ -40,6 +40,39 @@ export function useAuth() {
             .single();
 
         if (error) {
+            // If profile doesn't exist (PGRST116), create it
+            if (error.code === 'PGRST116') {
+                console.log("Profile not found, creating new profile for user:", userId);
+
+                // Get email from session if possible, or we might need it passed in. 
+                // However, fetchProfile is called with userId. 
+                // We'll try to get the user from auth to get the email.
+                const { data: { user } } = await supabase.auth.getUser();
+
+                if (user && user.id === userId) {
+                    const newProfile: any = {
+                        id: userId,
+                        email: user.email!,
+                        subscription_status: 'active',
+                        subscription_tier: 'free',
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
+
+                    const { data: insertedProfile, error: insertError } = await supabase
+                        .from('profiles')
+                        .insert(newProfile)
+                        .select()
+                        .single();
+
+                    if (insertError) {
+                        console.error("Failed to create profile:", insertError);
+                        return null;
+                    }
+                    return insertedProfile as Profile;
+                }
+            }
+
             console.error("Failed to fetch profile:", error);
             return null;
         }
