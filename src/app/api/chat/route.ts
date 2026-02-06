@@ -22,10 +22,8 @@ export async function POST(request: NextRequest) {
         // IP Rate limiting - parse common headers robustly
         const xff = request.headers.get("x-forwarded-for");
         const ipCandidate = xff ? xff.split(",")[0].trim() : request.headers.get("x-real-ip") ?? request.headers.get("cf-connecting-ip") ?? request.headers.get("true-client-ip") ?? null;
-        if (!ipCandidate) {
-            return NextResponse.json({ error: "Could not determine client IP" }, { status: 400 });
-        }
-        const ip = ipCandidate;
+        // Fallback to 127.0.0.1 for local development (no proxy headers)
+        const ip = ipCandidate || "127.0.0.1";
         const ipCheck = checkIPRateLimit(ip);
         if (!ipCheck.allowed) {
             return NextResponse.json(
