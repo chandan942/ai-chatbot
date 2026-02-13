@@ -86,18 +86,23 @@ export default function ChatPage() {
         resetStreamContent();
 
         try {
+            const requestBody = {
+                messages: [...messages, { role: "user", content: userMessage.content }].map((m) => ({
+                    role: m.role,
+                    content: m.content,
+                })),
+                model: selectedModel,
+                chatId,
+            };
+            console.log("[FRONTEND DEBUG] Sending request:", JSON.stringify(requestBody, null, 2));
+
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    messages: [...messages, { role: "user", content: userMessage.content }].map((m) => ({
-                        role: m.role,
-                        content: m.content,
-                    })),
-                    model: selectedModel,
-                    chatId,
-                }),
+                body: JSON.stringify(requestBody),
             });
+
+            console.log("[FRONTEND DEBUG] Response status:", response.status, response.ok);
 
             if (!response.ok) {
                 // Try to parse JSON error, fallback to text
@@ -151,6 +156,8 @@ export default function ChatPage() {
                         usage?: { total_tokens?: number };
                         error?: string;
                     };
+
+                    console.log("[FRONTEND DEBUG] SSE data:", JSON.stringify(data));
 
                     if (data?.token) {
                         assistantContent += data.token;

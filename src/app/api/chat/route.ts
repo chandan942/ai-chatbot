@@ -114,20 +114,24 @@ export async function POST(request: NextRequest) {
 
         // Create streaming response
         const encoder = new TextEncoder();
+        console.log("[CHAT DEBUG] Starting stream for model:", model, "provider:", provider);
         const stream = new ReadableStream({
             async start(controller) {
                 let totalTokens = 0;
                 let fullContent = "";
 
                 try {
+                    console.log("[CHAT DEBUG] Calling AI provider streamChat...");
                     await aiProvider.streamChat(sanitizedMessages, {
                         onToken: (token) => {
+                            console.log("[CHAT DEBUG] Token received:", token.substring(0, 20));
                             fullContent += token;
                             controller.enqueue(
                                 encoder.encode(`data: ${JSON.stringify({ token })}\n\n`)
                             );
                         },
                         onComplete: async (content, usage) => {
+                            console.log("[CHAT DEBUG] Stream complete, tokens:", usage.total_tokens);
                             try {
                                 totalTokens = usage.total_tokens;
 
@@ -185,11 +189,13 @@ export async function POST(request: NextRequest) {
                             }
                         },
                         onError: (error) => {
-                            // Log full error server-side, but send a sanitized message to the client
+                            // TEMP: Send actual error for debugging
+                            const errorMsg = error instanceof Error ? error.message : String(error);
+                            console.error("CHAT ERROR:", errorMsg);
                             logger.error("Chat stream error", error, { userId: user.id, model });
                             controller.enqueue(
                                 encoder.encode(
-                                    `data: ${JSON.stringify({ error: "An internal error occurred while generating the response" })}\n\n`
+                                    `data: ${JSON.stringify({ error: `DEBUG: ${errorMsg}` })}\n\n`
                                 )
                             );
                             controller.close();

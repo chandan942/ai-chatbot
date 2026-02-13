@@ -58,7 +58,13 @@ export class OpenAIProvider implements AIProviderInterface {
             }
 
             callbacks.onComplete(fullContent, usage);
-        } catch (error) {
+        } catch (error: any) {
+            console.error("========= OPENAI ERROR =========");
+            console.error("Error message:", error?.message);
+            console.error("Error name:", error?.name);
+            console.error("Error status:", error?.status);
+            console.error("Full error:", JSON.stringify(error, null, 2));
+            console.error("================================");
             callbacks.onError(error instanceof Error ? error : new Error(String(error)));
         }
     }
