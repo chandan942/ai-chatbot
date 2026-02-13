@@ -18,6 +18,7 @@ import {
     BarChart3,
     Menu,
     X,
+    AlertCircle,
 } from "lucide-react";
 import { MessageItem } from "@/components/chat/MessageItem";
 import { ModelSelector } from "@/components/chat/ModelSelector";
@@ -35,6 +36,7 @@ export default function ChatPage() {
         isStreaming,
         streamingContent,
         selectedModel,
+        error,
         setCurrentChat,
         createChat,
         addMessage,
@@ -43,6 +45,7 @@ export default function ChatPage() {
         appendStreamContent,
         resetStreamContent,
         setError,
+        clearError,
     } = useChatStore();
 
     const [input, setInput] = useState("");
@@ -385,6 +388,23 @@ export default function ChatPage() {
 
                     <div ref={messagesEndRef} />
                 </div>
+
+                {/* Error Banner */}
+                {error && (
+                    <div className="mx-4 mt-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <p className="text-sm text-red-400 font-medium">Error</p>
+                            <p className="text-sm text-red-300 mt-0.5">{error}</p>
+                        </div>
+                        <button
+                            onClick={clearError}
+                            className="text-red-400 hover:text-red-300 p-1"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    </div>
+                )}
 
                 {/* Input Area */}
                 <div className="p-4 border-t border-gray-200 dark:border-gray-800">

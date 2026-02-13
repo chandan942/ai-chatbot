@@ -12,84 +12,104 @@ const protectedRoutes = ["/chat", "/history", "/usage", "/settings", "/billing"]
 const authRoutes = ["/login", "/signup"];
 
 export async function middleware(request: NextRequest) {
+    const pathname = request.nextUrl.pathname;
+
+    // Only run Supabase auth check on routes that actually need it
+    const needsAuth = protectedRoutes.some((route) => pathname.startsWith(route));
+    const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+
+    // For non-protected, non-auth routes (like "/"), skip Supabase entirely
+    if (!needsAuth && !isAuthRoute) {
+        const response = NextResponse.next();
+        setSecurityHeaders(response);
+        return response;
+    }
+
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     });
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                get(name: string) {
-                    return request.cookies.get(name)?.value;
-                },
-                set(name: string, value: string, options: CookieOptions) {
-                    request.cookies.set({
-                        name,
-                        value,
-                        ...options,
-                    });
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    });
-                    response.cookies.set({
-                        name,
-                        value,
-                        ...options,
-                    });
-                },
-                remove(name: string, options: CookieOptions) {
-                    request.cookies.set({
-                        name,
-                        value: "",
-                        ...options,
-                    });
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    });
-                    response.cookies.set({
-                        name,
-                        value: "",
-                        ...options,
-                    });
-                },
-            },
-        }
-    );
-
     let user = null;
+
     try {
-        const { data } = await supabase.auth.getUser();
-        user = data?.user ?? null;
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                    get(name: string) {
+                        return request.cookies.get(name)?.value;
+                    },
+                    set(name: string, value: string, options: CookieOptions) {
+                        request.cookies.set({
+                            name,
+                            value,
+                            ...options,
+                        });
+                        response = NextResponse.next({
+                            request: {
+                                headers: request.headers,
+                            },
+                        });
+                        response.cookies.set({
+                            name,
+                            value,
+                            ...options,
+                        });
+                    },
+                    remove(name: string, options: CookieOptions) {
+                        request.cookies.set({
+                            name,
+                            value: "",
+                            ...options,
+                        });
+                        response = NextResponse.next({
+                            request: {
+                                headers: request.headers,
+                            },
+                        });
+                        response.cookies.set({
+                            name,
+                            value: "",
+                            ...options,
+                        });
+                    },
+                },
+            }
+        );
+
+        // Timeout wrapper — don't let Supabase hang the middleware
+        const result = await Promise.race([
+            supabase.auth.getUser(),
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+        ]);
+
+        if (result && "data" in result) {
+            user = result.data?.user ?? null;
+        }
     } catch (err) {
-        // If Supabase is unreachable (paused project, network error, etc.),
-        // don't block the request — let it through and let the page handle it.
-        console.warn("Middleware: Supabase auth check failed, allowing request through", err);
+        console.warn("Middleware: Supabase auth check failed, allowing request through");
     }
 
-    const pathname = request.nextUrl.pathname;
-
-    if (protectedRoutes.some((route) => pathname.startsWith(route))) {
-        if (!user) {
-            const loginUrl = new URL("/login", request.url);
-            loginUrl.searchParams.set("redirect", pathname);
-            return NextResponse.redirect(loginUrl);
-        }
+    // Redirect unauthenticated users away from protected routes
+    if (needsAuth && !user) {
+        const loginUrl = new URL("/login", request.url);
+        loginUrl.searchParams.set("redirect", pathname);
+        return NextResponse.redirect(loginUrl);
     }
 
-    if (authRoutes.some((route) => pathname.startsWith(route))) {
-        if (user) {
-            return NextResponse.redirect(new URL("/chat", request.url));
-        }
+    // Redirect authenticated users away from auth routes
+    if (isAuthRoute && user) {
+        return NextResponse.redirect(new URL("/chat", request.url));
     }
 
+    setSecurityHeaders(response);
+    return response;
+}
+
+function setSecurityHeaders(response: NextResponse) {
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -97,6 +117,4 @@ export async function middleware(request: NextRequest) {
         "Permissions-Policy",
         "camera=(), microphone=(), geolocation=()"
     );
-
-    return response;
 }
