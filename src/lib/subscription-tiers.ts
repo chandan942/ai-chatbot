@@ -25,7 +25,7 @@ export const TIERS: Record<SubscriptionTier, TierConfig> = {
         name: "Free",
         price: 0,
         messagesPerMonth: 50,
-        models: ["gpt-3.5-turbo", "gemini-pro"],
+        models: ["gpt-3.5-turbo", "gemini-pro", "gemini-2.0-flash"],
         features: ["basic_chat"],
     },
     pro: {
@@ -41,6 +41,7 @@ export const TIERS: Record<SubscriptionTier, TierConfig> = {
             "gemini-pro",
             "gemini-1.5-pro",
             "gemini-1.5-flash",
+            "gemini-2.0-flash",
         ],
         features: ["basic_chat", "chat_history", "export", "regenerate", "edit_message"],
     },
@@ -60,6 +61,7 @@ export const TIERS: Record<SubscriptionTier, TierConfig> = {
             "gemini-pro",
             "gemini-1.5-pro",
             "gemini-1.5-flash",
+            "gemini-2.0-flash",
         ],
         features: [
             "basic_chat",
@@ -118,6 +120,7 @@ export function getModelDisplayName(model: AIModel): string {
         "gemini-pro": "Gemini Pro",
         "gemini-1.5-pro": "Gemini 1.5 Pro",
         "gemini-1.5-flash": "Gemini 1.5 Flash",
+        "gemini-2.0-flash": "Gemini 2.0 Flash",
     };
     return displayNames[model] || model;
 }

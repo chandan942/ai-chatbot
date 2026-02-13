@@ -28,6 +28,7 @@ const ALL_MODELS: AIModel[] = [
     "gemini-pro",
     "gemini-1.5-pro",
     "gemini-1.5-flash",
+    "gemini-2.0-flash",
 ];
 
 const MODEL_GROUPS = {
@@ -38,7 +39,7 @@ const MODEL_GROUPS = {
         "claude-3-opus-20240229",
         "claude-3-5-sonnet-20241022",
     ] as AIModel[],
-    Google: ["gemini-pro", "gemini-1.5-pro", "gemini-1.5-flash"] as AIModel[],
+    Google: ["gemini-pro", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.0-flash"] as AIModel[],
 };
 
 export function ModelSelector() {

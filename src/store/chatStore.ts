@@ -59,7 +59,7 @@ export const useChatStore = create<ChatStore>()(
             isStreaming: false,
             streamingContent: "",
             error: null,
-            selectedModel: "gpt-3.5-turbo",
+            selectedModel: "gemini-2.0-flash",
             userTier: "free",
 
             // Simple setters
