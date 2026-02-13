@@ -64,9 +64,15 @@ export async function middleware(request: NextRequest) {
         }
     );
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    let user = null;
+    try {
+        const { data } = await supabase.auth.getUser();
+        user = data?.user ?? null;
+    } catch (err) {
+        // If Supabase is unreachable (paused project, network error, etc.),
+        // don't block the request — let it through and let the page handle it.
+        console.warn("Middleware: Supabase auth check failed, allowing request through", err);
+    }
 
     const pathname = request.nextUrl.pathname;
 
